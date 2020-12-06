@@ -5,14 +5,36 @@ async function routes(fastify, options) {
 
 
     fastify.get("/api/timestamp/:date", async (req, res) => {
-        let current = req.params.date
 
-        let unix = new Date(current).getTime()
-        let utc = new Date(current).toUTCString()
+        let incoming = req.params.date
+        var utc;
+        var unix;
+
+        if (incoming === "") {
+            console.log("hey?")
+            utc = new Date().toUTCString()
+            unix = new Date().getTime()
+            return { 
+                utc,
+                unix 
+            }
+        }
+
+        if (incoming.length == 13) {
+            utc = new Date(parseInt(incoming)).toUTCString() 
+            unix = parseInt(incoming)
+            return { 
+                utc, 
+                unix 
+            }            
+        } else {
+            unix = new Date(incoming).getTime()
+            utc = new Date(incoming).toUTCString()
+            return { utc, unix }   
+        }        
 
         return { 
-            unix: unix,
-            utc: utc
+            error: "Invalid Date"
         }
     })
 }
