@@ -1,3 +1,35 @@
+const dateParser = async (dateObj) => {
+    // incoming as string
+
+    let dateParsed = new Date(dateObj);
+    let unix = dateParsed.getTime(); 
+    let utc = dateParsed.toUTCString(); 
+
+
+    if (dateObj.length == 13 ) {
+        utc = new Date(parseInt(dateObj)).toUTCString() 
+        unix = parseInt(dateObj)
+
+        return { 
+            utc, 
+            unix 
+        } 
+    }
+
+    if (dateObj === "") {    
+        return { 
+            unix: new Date().getTime(),
+            utc: new Date().toUTCString() 
+        }
+    } 
+
+    return {
+        unix: unix,
+        utc: utc
+    }    
+
+} 
+
 async function routes(fastify, options) {
     fastify.get("/", async (req, res) => {
         return { hello: "world"}
@@ -5,36 +37,8 @@ async function routes(fastify, options) {
 
 
     fastify.get("/api/timestamp/:date", async (req, res) => {
-
-        let incoming = req.params.date
-        var utc;
-        var unix;
-
-        if (incoming === "") {
-            utc = new Date().toUTCString()
-            unix = new Date().getTime()
-            return { 
-                utc,
-                unix 
-            }
-        }
-
-        if (incoming.length == 13) {
-            utc = new Date(parseInt(incoming)).toUTCString() 
-            unix = parseInt(incoming)
-            return { 
-                utc, 
-                unix 
-            }            
-        } else {
-            unix = new Date(incoming).getTime()
-            utc = new Date(incoming).toUTCString()
-            return { utc, unix }   
-        }        
-
-        return { 
-            error: "Invalid Date"
-        }
+        date = await dateParser(req.params.date);
+        return date
     })
 }
 
