@@ -13,3 +13,5 @@ const start = async() => {
 }
 
 start()
+
+module.exports = fastify;

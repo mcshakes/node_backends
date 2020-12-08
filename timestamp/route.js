@@ -11,7 +11,6 @@ async function routes(fastify, options) {
         var unix;
 
         if (incoming === "") {
-            console.log("hey?")
             utc = new Date().toUTCString()
             unix = new Date().getTime()
             return { 
